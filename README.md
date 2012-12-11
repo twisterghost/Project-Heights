@@ -1,4 +1,3 @@
-Project-Heights
-===============
+#Project-Heights
 
-A simple JavaScript game engine; bring your creativity to new heights.
+In development! The project will be posted to this repository soon.
