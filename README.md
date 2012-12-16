@@ -24,4 +24,10 @@ and I will be happy to answer or even help you make your game.
 You can also email the Project Heights beta members by sending an email to
 projectheights@googlegroups.com.
 
-Enjoy, and thank you for your participation!
+I will be updating the main repository frequently as bugs are found. If you are
+planning to develop for the engine, make your own branch/repo and open a pull
+request. Once your code is reviewed and approved it will be added in to the
+engine in the next release. The documentaion offered at docs.heightsjs.com are
+for the main branch only.
+
+Enjoy and thank your for your participation!
