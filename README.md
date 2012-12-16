@@ -18,6 +18,11 @@ add useful functionality. If you are more into developing a game of your own,
 use the engine to do so and report on what you would like to see so we can get
 it implemented asap! You can also report bugs via GitHub, and please do!!
 
+Be sure to sign up to the [Project Heights google group](https://groups.google.com/forum/?fromgroups#!forum/projectheights) if you are interested in
+joining the developers. You can also view the
+[Trello board](http://trello.heightsjs.com) and request access to that, or
+comment/vote on features.
+
 If you have any questions at all, you can email me at twisterghost@gmail.com
 and I will be happy to answer or even help you make your game.
 
