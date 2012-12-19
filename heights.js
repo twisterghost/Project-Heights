@@ -20,7 +20,7 @@ var running = false;
 var runIntervalID = -1;
 
 // Focus canvas for the game to run on.
-var gameCanvas;
+var gameCanvas = null;
 
 // Keys objects.
 var inputObjects = [];
@@ -100,7 +100,7 @@ function start() {
   viewHeight = getCanvas().height();
   viewWidthCurrent = viewWidth;
   viewHeightCurrent = viewHeight;
-
+  runSteps();
   setUpListeners();
 }
 
