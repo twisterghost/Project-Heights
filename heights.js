@@ -34,6 +34,9 @@ var debugModeFlag = false;
 // Collision thread.
 var collisionWorker = new Worker("workers/heights-collisions.js");
 
+// Version number.
+var version = "1.0.1";
+
 // Viewport property variables.
 var viewX = 0;
 var viewY = 0;
@@ -63,6 +66,13 @@ var keyStatus = {};
 /************************
  * Engine Functionality
  ***********************/
+
+/**
+ * Returns the version number of the engine.
+ */
+function getVersion() {
+  return version;
+}
 
 /**
  * Runs the step function on all tracked objects.
