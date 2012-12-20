@@ -32,10 +32,10 @@ var sounds = [];
 var debugModeFlag = false;
 
 // Collision thread.
-var collisionWorker = new Worker("workers/heights-collisions.js");
+var collisionWorker = new Worker("/workers/heights-collisions.js");
 
 // Version number.
-var version = "1.0.1";
+var version = "1.0.2";
 
 // Viewport property variables.
 var viewX = 0;
@@ -83,7 +83,7 @@ function step() {
       objects[i].step();
       objects[i].drawObj();
     } catch (e) {
-      if (debugMode) {
+      if (debugModeFlag) {
         console.log(e);
       }
     }
