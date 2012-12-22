@@ -32,10 +32,11 @@ var sounds = [];
 var debugModeFlag = false;
 
 // Collision thread.
-var collisionWorker = new Worker("/workers/heights-collisions.js");
+var usingCollisionWorker = true;
+var collisionWorker = null;
 
 // Version number.
-var version = "1.0.2";
+var version = "1.0.3";
 
 // Viewport property variables.
 var viewX = 0;
@@ -105,6 +106,9 @@ function start() {
     gameCanvas = $("canvas");
   }
 
+  if (usingCollisionWorker) {
+    collisionWorker = new Worker("workers/heights-collisions.js");
+  }
   // Set default viewport width and height.
   viewWidth = getCanvas().width();
   viewHeight = getCanvas().height();
@@ -114,6 +118,14 @@ function start() {
   setUpListeners();
 }
 
+
+/**
+ * Turns off use of the collision worker, deactivating the Passive Collision
+ * system. Must be called before start();
+ */
+function deactivatePCS() {
+  usingCollisionWorker = false;
+}
 
 /**
  * Begins or resets the cycle of steps.
@@ -811,44 +823,22 @@ Draw.prototype.rectangle = function(params) {
  * @return the draw object.
  */
 Draw.prototype.polygon = function(params) {
-  this.x = varDefault(params.x, 0);
-  this.y = varDefault(params.y, 0);
-  this.width = varDefault(params.width, 0);
-  this.height = varDefault(params.height, 0);
-  this.filled = varDefault(params.filled, false);
-  this.color = varDefault(params.color, "#000");
-  this.type = Draw.POLYGON;
-  this.lineWidth = varDefault(params.lineWidth, 1);
-  this.sides = varDefault(params.sides, 3);
-  this.centered = varDefault(params.centered, true);
-  this.radius = varDefault(params.radius, 10);
-  this.projection = varDefault(params.projection, .5);
-  if (this.filled) {
-    getCanvas().drawPolygon({
-      x: this.x, y: this.y,
-      width: this.width, height: this.height,
-      fillStyle: this.color,
-      layer: true,
-      name: this.id.toString(),
-      fromCenter: this.centered,
-      sides: this.sides,
-      radius: this.radius,
-      projection: this.projection,
-    });
-  } else {
-    getCanvas().drawPolygon({
-      x: this.x, y: this.y,
-      width: this.width, height: this.height,
-      strokeStyle: this.color,
-      strokeWidth: this.lineWidth,
-      layer: true,
-      name: this.id.toString(),
-      fromCenter: this.centered,
-      sides: this.sides,
-      radius: this.radius,
-      projection: this.projection,
-    });
-  }
+  params.x = varDefault(params.x, 0);
+  params.y = varDefault(params.y, 0);
+  params.width = varDefault(params.width, 0);
+  params.height = varDefault(params.height, 0);
+  params.filled = varDefault(params.filled, false);
+  params.color = varDefault(params.color, "#000");
+  params.type = Draw.POLYGON;
+  params.lineWidth = varDefault(params.lineWidth, 1);
+  params.sides = varDefault(params.sides, 3);
+  params.centered = varDefault(params.centered, true);
+  params.radius = varDefault(params.radius, 10);
+  params.projection = varDefault(params.projection, .5);
+  params = this.normalizeDrawParams(params);
+
+  getCanvas().drawPolygon(params);
+
   return this;
 }
 
@@ -859,24 +849,19 @@ Draw.prototype.polygon = function(params) {
  * @return the draw object.
  */
 Draw.prototype.text = function(params) {
-  this.x = varDefault(params.x, 0);
-  this.y = varDefault(params.y, 0);
-  this.centered = varDefault(params.centered, false);
-  this.text = varDefault(params.text, "");
-  this.font = varDefault(params.font, "12pt Helvetica");
-  this.color = varDefault(params.color, "#000");
-
+  params.x = varDefault(params.x, 0);
+  params.y = varDefault(params.y, 0);
+  params.centered = varDefault(params.centered, false);
+  params.text = varDefault(params.text, "");
+  params.font = varDefault(params.font, "12pt Helvetica");
+  params.color = varDefault(params.color, "#000");
+  params.filled = varDefault(params.filled, true);
+  params = this.normalizeDrawParams(params);
   this.type = Draw.TEXT;
+  params.layer = true;
+  params.name = this.id.toString();
 
-  getCanvas().drawText({
-    name: this.id.toString(),
-    layer: true,
-    x: this.x, y: this.y,
-    text: this.text,
-    fillStyle: this.color,
-    font: this.font,
-    fromCenter: this.centered,
-  });
+  getCanvas().drawText(params);
   return this;
 };
 
@@ -887,55 +872,7 @@ Draw.prototype.text = function(params) {
  */
 Draw.prototype.update = function(params) {
 
-  // Convert parameters from Heights standards to jCanvas standards.
-  switch(this.type) {
-    case Draw.SPRITESHEET:
-      params = convertProperty(params, "cropX", "sx");
-      params = convertProperty(params, "cropY", "sx");
-      params = convertProperty(params, "cropWidth", "sWidth");
-      params = convertProperty(params, "cropHeight", "sHeight");
-      params = convertProperty(params, "url", "source");
-      params = convertProperty(params, "centered", "fromCenter");
-      break;
-    case Draw.CIRCLE:
-      params = convertProperty(params, "color", "strokeStyle");
-      params = convertProperty(params, "width", "strokeWidth");
-      params = convertProperty(params, "centered", "fromCenter");
-      if (this.filled) {
-        params = convertProperty(params, "color", "fillStyle");
-        params = convertProperty(params, "color", "strokeStyle");
-      } else {
-        params = convertProperty(params, "color", "strokeStyle");
-      }
-      break;
-    case Draw.SPRITE:
-      params = convertProperty(params, "url", "source");
-      params = convertProperty(params, "centered", "fromCenter");
-      break;
-    case Draw.RECTANGLE:
-      params = convertProperty(params, "lineWidth", "strokeWidth");
-      if (this.filled) {
-        params = convertProperty(params, "color", "fillStyle");
-      } else {
-        params = convertProperty(params, "color", "strokeStyle");
-      }
-      break;
-    case draw.POLYGON:
-      params = convertProperty(params, "lineWidth", "strokeWidth");
-      if (this.filled) {
-        params = convertProperty(params, "color", "fillStyle");
-        params = convertProperty(params, "color", "strokeStyle");
-      } else {
-        params = convertProperty(params, "color", "strokeStyle");
-      }
-      params = convertProperty(params, "centered", "fromCenter");
-      break;
-    case draw.TEXT:
-      params = convertProperty(params, "centered", "fromCenter");
-      params = convertProperty(params, "color", "fillStyle");
-      params = convertProperty(params, "color", "strokeStyle");
-  }
-
+  params = this.normalizeDrawParams(params);
   getCanvas().setLayer(this.id.toString(), params);
 
 };
@@ -947,3 +884,20 @@ Draw.prototype.update = function(params) {
 Draw.prototype.undraw = function() {
   getCanvas().removeLayer(this.id.toString());
 };
+
+
+Draw.prototype.normalizeDrawParams = function(params) {
+  if (params.filled) {
+    params = convertProperty(params, "color", "fillStyle");
+  }
+  params = convertProperty(params, "cropX", "sx");
+  params = convertProperty(params, "cropY", "sx");
+  params = convertProperty(params, "cropWidth", "sWidth");
+  params = convertProperty(params, "cropHeight", "sHeight");
+  params = convertProperty(params, "url", "source");
+  params = convertProperty(params, "centered", "fromCenter");
+  params = convertProperty(params, "color", "strokeStyle");
+  params = convertProperty(params, "lineWidth", "strokeWidth");
+  params = convertProperty(params, "centered", "fromCenter");
+  return params;
+}
