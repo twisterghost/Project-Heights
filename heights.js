@@ -742,6 +742,13 @@ Draw.prototype.spriteSheet = function(params) {
   params.url = varDefault(params.url, "");
   params.centered = varDefault(params.centered, false);
   params.updateable = varDefault(params.updateable, true);
+  params.cropFromCenter = false;
+  
+  this.spriteWidth = params.cropWidth;
+  this.spriteHeight = params.cropHeight;
+  this.spritesPerRow = varDefault(params.spritesPerRow, 1);
+  this.totalSprites = varDefault(params.totalSprites, 1);
+  this.spriteIndex = varDefault(params.spriteIndex, 0);
   
   // Normalize paramseters.
   params = this.normalizeDrawParams(params);
@@ -751,6 +758,37 @@ Draw.prototype.spriteSheet = function(params) {
   getCanvas().drawImage(params);
   return this;
 };
+
+
+/**
+ * Draws the current sprite index from the spritesheet.
+ */
+Draw.prototype.cropToCurrentSprite = function() {
+  var xx = Math.floor(this.spriteIndex / this.spritesPerRow) * this.spriteWidth;
+  var yy = (this.spriteIndex % this.spritesPerRow) * this.spriteHeight;
+  this.update({cropX: xx, cropY: yy});
+}
+
+
+/**
+ * Goes to the next frame on the spriteSheet.
+ */
+Draw.prototype.nextSprite = function() {
+  if (this.type == Draw.SPRITESHEET) {
+    this.spriteIndex = (this.spriteIndex + 1) % this.totalSprites;
+    this.cropToCurrentSprite();
+  }
+}
+
+
+/**
+ * Sets the current frame of the spritesheet.
+ */
+Draw.prototype.gotoSprite = function(ind) {
+  if (this.type == Draw.SPRITESHEET) {
+    this.spriteIndex = ind % this.totalSprites;
+  }
+}
 
 
 /**
@@ -867,6 +905,5 @@ Draw.prototype.normalizeDrawParams = function(params) {
   params = convertProperty(params, "centered", "fromCenter");
   params = convertProperty(params, "color", "strokeStyle");
   params = convertProperty(params, "lineWidth", "strokeWidth");
-  params = convertProperty(params, "centered", "fromCenter");
   return params;
 }
