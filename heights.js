@@ -64,6 +64,8 @@ var charNames = {
 
 var keyStatus = {};
 
+var workerPath = "/workers";
+
 /************************
  * Engine Functionality
  ***********************/
@@ -107,7 +109,7 @@ function start() {
   }
 
   if (usingCollisionWorker) {
-    collisionWorker = new Worker("workers/heights-collisions.js");
+    collisionWorker = new Worker(workerPath + "/heights-collisions.js");
   }
   // Set default viewport width and height.
   viewWidth = getCanvas().width();
@@ -855,6 +857,7 @@ Draw.prototype.rectangle = function(params) {
   params.color = varDefault(params.color, "#000");
   params.type = Draw.RECTANGLE;
   params.lineWidth = varDefault(params.lineWidth, 1);
+  params.centered = varDefault(params.centered, false);
   
   // Normalize parameters.
   params = this.normalizeDrawParams(params);
