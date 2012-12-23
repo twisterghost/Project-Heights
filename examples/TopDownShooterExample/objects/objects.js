@@ -1,4 +1,4 @@
-var spriteLoc = "/sprites/";
+var spriteLoc = "sprites/";
 var score = 0;
 
 var plane = function(x, y, id, params) {
