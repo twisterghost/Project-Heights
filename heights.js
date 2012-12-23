@@ -660,7 +660,7 @@ Sound.prototype.setProperty = function(prop, value) {
 }
 
 /**
- * Object: draw
+ * Object: Draw
  * Handles graphical drawing to the 2D canvas context.
  */
 var Draw = function() {
@@ -686,38 +686,21 @@ Draw.prototype.POLYGON = 7;
  * @return the draw object.
  */
 Draw.prototype.circle = function(params) {
-  this.x = varDefault(params.x, 0);
-  this.y = varDefault(params.y, 0);
-  this.rad = varDefault(params.rad, 0);
-  this.color = varDefault(params.color, "#000");
-  this.width = varDefault(params.width, 1);
-  this.centered = varDefault(params.centered, true);
-  this.updateable = varDefault(params.updateable, true);
-  this.filled = varDefault(params.filled, false);
+  params.x = varDefault(params.x, 0);
+  params.y = varDefault(params.y, 0);
+  params.rad = varDefault(params.rad, 0);
+  params.color = varDefault(params.color, "#000");
+  params.width = varDefault(params.width, 1);
+  params.centered = varDefault(params.centered, true);
+  params.updateable = varDefault(params.updateable, true);
+  params.filled = varDefault(params.filled, false);
+  
+  // Normalize parameters.
+  params.layer = true;
+  params.name = this.id.toString();
+  params = this.normalizeDrawParams(params);
   this.type = Draw.CIRCLE;
-
-  if (this.filled) {
-    getCanvas().drawArc({
-      layer: this.updateable,
-      name: this.id.toString(),
-      strokeStyle: this.color,
-      strokeWidth: this.width,
-      fillStyle: this.color,
-      fromCenter: this.centered,
-      x: this.x, y: this.y,
-      radius: this.rad,
-    });
-  } else {
-    getCanvas().drawArc({
-      layer: this.updateable,
-      name: this.id.toString(),
-      strokeStyle: this.color,
-      strokeWidth: this.width,
-      fromCenter: this.centered,
-      x: this.x, y: this.y,
-      radius: this.rad,
-    });
-  }
+  getCanvas().drawArc(params);
   return this;
 };
 
@@ -728,22 +711,18 @@ Draw.prototype.circle = function(params) {
  * @return the draw object.
  */
 Draw.prototype.sprite = function(params) {
-  this.x = varDefault(params.x, 0);
-  this.y = varDefault(params.y, 0);
-  this.url = varDefault(params.url, "");
-  this.centered = varDefault(params.centered, false);
-  this.updateable = varDefault(params.updateable, true);
-  this.rotate = varDefault(params.rotate, 0);
+  params.x = varDefault(params.x, 0);
+  params.y = varDefault(params.y, 0);
+  params.url = varDefault(params.url, "");
+  params.centered = varDefault(params.centered, false);
+  params.rotate = varDefault(params.rotate, 0);
+  
+  // Normalize parameters.
+  params = this.normalizeDrawParams(params);
+  params.layer = true;
+  params.name = this.id.toString();
   this.type = Draw.SPRITE;
-
-  getCanvas().drawImage({
-    layer: this.updateable,
-    name: this.id.toString(),
-    source: this.url,
-    x: this.x, y: this.y,
-    rotate: this.rotate,
-    fromCenter: this.centered,
-  });
+  getCanvas().drawImage(params);
   return this;
 };
 
@@ -754,26 +733,22 @@ Draw.prototype.sprite = function(params) {
  * @return the draw object.
  */
 Draw.prototype.spriteSheet = function(params) {
-  this.x = varDefault(params.x, 0);
-  this.y = varDefault(params.y, 0);
-  this.cropX = varDefault(params.cropX, 0);
-  this.cropY = varDefault(params.cropY, 0);
-  this.cropWidth = varDefault(params.cropWidth, 32);
-  this.cropHeight = varDefault(params.cropHeight, 32);
-  this.url = varDefault(params.url, "");
-  this.centered = varDefault(params.centered, false);
-  this.updateable = varDefault(params.updateable, true);
+  params.x = varDefault(params.x, 0);
+  params.y = varDefault(params.y, 0);
+  params.cropX = varDefault(params.cropX, 0);
+  params.cropY = varDefault(params.cropY, 0);
+  params.cropWidth = varDefault(params.cropWidth, 32);
+  params.cropHeight = varDefault(params.cropHeight, 32);
+  params.url = varDefault(params.url, "");
+  params.centered = varDefault(params.centered, false);
+  params.updateable = varDefault(params.updateable, true);
+  
+  // Normalize paramseters.
+  params = this.normalizeDrawParams(params);
+  params.layer = true;
+  params.name = this.id.toString();
   this.type = Draw.SPRITESHEET;
-  getCanvas().drawImage({
-    layer: this.updateable,
-    name: this.id.toString(),
-    source: this.url,
-    x: this.x, y: this.y,
-    sx: this.cropX, sy: this.cropY,
-    sWidth: this.cropWidth, sHeight: this.cropHeight,
-    fromCenter: this.centered,
-    cropFromCenter: false,
-  });
+  getCanvas().drawImage(params);
   return this;
 };
 
@@ -784,35 +759,22 @@ Draw.prototype.spriteSheet = function(params) {
  * @return the draw object.
  */
 Draw.prototype.rectangle = function(params) {
-  this.x = varDefault(params.x, 0);
-  this.y = varDefault(params.y, 0);
-  this.width = varDefault(params.width, 0);
-  this.height = varDefault(params.height, 0);
-  this.filled = varDefault(params.filled, false);
-  this.color = varDefault(params.color, "#000");
+  params.x = varDefault(params.x, 0);
+  params.y = varDefault(params.y, 0);
+  params.width = varDefault(params.width, 0);
+  params.height = varDefault(params.height, 0);
+  params.filled = varDefault(params.filled, false);
+  params.color = varDefault(params.color, "#000");
+  params.type = Draw.RECTANGLE;
+  params.lineWidth = varDefault(params.lineWidth, 1);
+  
+  // Normalize parameters.
+  params = this.normalizeDrawParams(params);
+  params.layer = true;
+  params.name = this.id.toString();
   this.type = Draw.RECTANGLE;
-  this.lineWidth = varDefault(params.lineWidth, 1);
-  if (this.filled) {
-    getCanvas().drawRect({
-      x: this.x, y: this.y,
-      width: this.width, height: this.height,
-      fillStyle: this.color,
-      strokeStyle: this.color,
-      layer: true,
-      name: this.id.toString(),
-      fromCenter: false,
-    });
-  } else {
-    getCanvas().drawRect({
-      x: this.x, y: this.y,
-      width: this.width, height: this.height,
-      strokeStyle: this.color,
-      strokeWidth: this.lineWidth,
-      layer: true,
-      name: this.id.toString(),
-      fromCenter: false,
-    });
-  }
+  
+  getCanvas().drawRect(params);
   return this;
 }
 
@@ -835,10 +797,14 @@ Draw.prototype.polygon = function(params) {
   params.centered = varDefault(params.centered, true);
   params.radius = varDefault(params.radius, 10);
   params.projection = varDefault(params.projection, .5);
+  
+  // Normalize parameters.
   params = this.normalizeDrawParams(params);
-
+  this.type = Draw.POLYGON;
+  params.layer = true;
+  params.name = this.id.toString();
+  
   getCanvas().drawPolygon(params);
-
   return this;
 }
 
@@ -856,6 +822,8 @@ Draw.prototype.text = function(params) {
   params.font = varDefault(params.font, "12pt Helvetica");
   params.color = varDefault(params.color, "#000");
   params.filled = varDefault(params.filled, true);
+  
+  // Normalize parameters.
   params = this.normalizeDrawParams(params);
   this.type = Draw.TEXT;
   params.layer = true;
@@ -871,10 +839,8 @@ Draw.prototype.text = function(params) {
  * @param params An array of jCanvas parameters for the layer.
  */
 Draw.prototype.update = function(params) {
-
   params = this.normalizeDrawParams(params);
   getCanvas().setLayer(this.id.toString(), params);
-
 };
 
 
@@ -886,6 +852,9 @@ Draw.prototype.undraw = function() {
 };
 
 
+/**
+ * Normalizes the parameters for the Draw object.
+ */
 Draw.prototype.normalizeDrawParams = function(params) {
   if (params.filled) {
     params = convertProperty(params, "color", "fillStyle");
