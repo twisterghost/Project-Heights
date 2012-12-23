@@ -505,6 +505,49 @@ function getKeyCode(input) {
 
 
 /**
+ * Returns the X position of the click.
+ * @param  input The input object to check.
+ * @return The x position of the click.
+ */
+function getClickX(input) {
+  return input.offsetY;
+}
+
+
+/**
+ * Returns the Y position of the click.
+ * @param  input the input object to check.
+ * @return The y position of the click.
+ */
+function getClickY(input) {
+  return input.offsetX;
+}
+
+
+/**
+ * Checks if an object was clicked on.
+ * @param  obj The object to check click status.
+ * @param  input The input object to check from.
+ * @return True if the object was clicked, false otherwise.
+ */
+function getClickedOn(obj, input) {
+  var inx = getClickX(input);
+  var iny = getClickY(input);
+  return inx >= obj.x && inx <= obj.x + obj.width &&
+         inx >= obj.y && inx <= obj.y + obj.height;
+}
+
+
+/**
+ * Returns the type of the given input.
+ * @param  input The input object to check.
+ * @return The type of the input object.
+ */
+function getInputType(input) {
+  return input.type;
+}
+
+/**
  * Returns the character from the given input object.
  * @param  input The input object.
  * @return The character or string of the key pressed.
@@ -657,7 +700,7 @@ Sound.prototype.getProperty = function(prop) {
  */
 Sound.prototype.setProperty = function(prop, value) {
   this.audioElement[0][prop] = value;
-}
+};
 
 /**
  * Object: Draw
