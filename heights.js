@@ -519,7 +519,7 @@ function getKeyCode(input) {
  * @return The x position of the click.
  */
 function getClickX(input) {
-  return input.offsetY;
+  return input.offsetY + viewY;
 }
 
 
@@ -529,7 +529,7 @@ function getClickX(input) {
  * @return The y position of the click.
  */
 function getClickY(input) {
-  return input.offsetX;
+  return input.offsetX + viewX;
 }
 
 
