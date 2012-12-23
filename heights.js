@@ -376,7 +376,14 @@ function destroyInstance(instance) {
   var ret = objects.splice(objectIndex, 1);
 
   // Remove from collideable array.
-  collideableObjs.splice(collideableObjs.indexOf(instance), 1);
+  if (collideableObjs.indexOf(instance) != -1) {
+    collideableObjs.splice(collideableObjs.indexOf(instance), 1);
+  }
+  
+  // Remove from input array.
+  if (inputObjects.indexOf(instance) != -1) {
+    inputObjects.splice(inputObjects.indexOf(instance), 1);
+  }
 
   // Try calling destroy on the object.
   try {
