@@ -723,7 +723,7 @@ var Draw = function() {
 
 // Define draw object constants.
 Draw.prototype.DRAW = 0;
-Draw.prototype.CIRLCE = 1;
+Draw.prototype.CIRCLE = 1;
 Draw.prototype.SPRITE = 2;
 Draw.prototype.SPRITESHEET = 3;
 Draw.prototype.RECTANGLE = 4;
