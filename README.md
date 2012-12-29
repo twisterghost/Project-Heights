@@ -18,7 +18,7 @@ add useful functionality. If you are more into developing a game of your own,
 use the engine to do so and report on what you would like to see so we can get
 it implemented asap! You can also report bugs via GitHub, and please do!!
 
-You can play the demo game [here](http://heightsjs.com/dev/shooter). Use arrow
+You can play the demo game [here](http://heightsjs.com/dev/shooter/index.html). Use arrow
 keys and space.
 
 Be sure to sign up to the [Project Heights google group](https://groups.google.com/forum/?fromgroups#!forum/projectheights) if you are interested in
