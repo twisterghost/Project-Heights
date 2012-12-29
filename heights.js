@@ -48,6 +48,10 @@ var viewHeight = 0;
 var viewWidthCurrent = 0;
 var viewHeightCurrent = 0;
 
+// Mouse position variables.
+var mouseX = -1;
+var mouseY = -1;
+
 // Character names dictionary.
 var charNames = {
   "&" : "UP",
@@ -60,7 +64,7 @@ var charNames = {
   "16": "SHIFT",
   "20": "CAPS",
   "9" : "TAB",
-}
+};
 
 var keyStatus = {};
 
@@ -543,7 +547,7 @@ function getClickedOn(obj, input) {
   var inx = getClickX(input);
   var iny = getClickY(input);
   return inx >= obj.x && inx <= obj.x + obj.width &&
-         inx >= obj.y && inx <= obj.y + obj.height;
+         iny >= obj.y && iny <= obj.y + obj.height;
 }
 
 
