@@ -385,7 +385,7 @@ function destroyInstance(instance) {
   if (collideableObjs.indexOf(instance) != -1) {
     collideableObjs.splice(collideableObjs.indexOf(instance), 1);
   }
-  
+
   // Remove from input array.
   if (inputObjects.indexOf(instance) != -1) {
     inputObjects.splice(inputObjects.indexOf(instance), 1);
@@ -615,6 +615,17 @@ function boundInstance(obj, minX, minY, maxX, maxY) {
   }
 }
 
+
+/**
+ * Returns true or false with the given percent chance.
+ * @param  percent And int between 0 and 100.
+ * @return true or false decided randomly by percent.
+ */
+function chance(percent) {
+  var rand = Math.floor(Math.random()*100) + 1;
+  return rand <= percent;
+}
+
 /************************
  * API Objects
  ***********************/
@@ -750,7 +761,7 @@ Draw.prototype.circle = function(params) {
   params.centered = varDefault(params.centered, true);
   params.updateable = varDefault(params.updateable, true);
   params.filled = varDefault(params.filled, false);
-  
+
   // Normalize parameters.
   params.layer = true;
   params.name = this.id.toString();
@@ -772,7 +783,7 @@ Draw.prototype.sprite = function(params) {
   params.url = varDefault(params.url, "");
   params.centered = varDefault(params.centered, false);
   params.rotate = varDefault(params.rotate, 0);
-  
+
   // Normalize parameters.
   params = this.normalizeDrawParams(params);
   params.layer = true;
@@ -799,13 +810,13 @@ Draw.prototype.spriteSheet = function(params) {
   params.centered = varDefault(params.centered, false);
   params.updateable = varDefault(params.updateable, true);
   params.cropFromCenter = false;
-  
+
   this.spriteWidth = params.cropWidth;
   this.spriteHeight = params.cropHeight;
   this.spritesPerRow = varDefault(params.spritesPerRow, 1);
   this.totalSprites = varDefault(params.totalSprites, 1);
   this.spriteIndex = varDefault(params.spriteIndex, 0);
-  
+
   // Normalize paramseters.
   params = this.normalizeDrawParams(params);
   params.layer = true;
@@ -862,13 +873,13 @@ Draw.prototype.rectangle = function(params) {
   params.type = Draw.RECTANGLE;
   params.lineWidth = varDefault(params.lineWidth, 1);
   params.centered = varDefault(params.centered, false);
-  
+
   // Normalize parameters.
   params = this.normalizeDrawParams(params);
   params.layer = true;
   params.name = this.id.toString();
   this.type = Draw.RECTANGLE;
-  
+
   getCanvas().drawRect(params);
   return this;
 }
@@ -892,13 +903,13 @@ Draw.prototype.polygon = function(params) {
   params.centered = varDefault(params.centered, true);
   params.radius = varDefault(params.radius, 10);
   params.projection = varDefault(params.projection, .5);
-  
+
   // Normalize parameters.
   params = this.normalizeDrawParams(params);
   this.type = Draw.POLYGON;
   params.layer = true;
   params.name = this.id.toString();
-  
+
   getCanvas().drawPolygon(params);
   return this;
 }
@@ -917,7 +928,7 @@ Draw.prototype.text = function(params) {
   params.font = varDefault(params.font, "12pt Helvetica");
   params.color = varDefault(params.color, "#000");
   params.filled = varDefault(params.filled, true);
-  
+
   // Normalize parameters.
   params = this.normalizeDrawParams(params);
   this.type = Draw.TEXT;
