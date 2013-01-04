@@ -112,9 +112,6 @@ function start() {
     gameCanvas = $("canvas");
   }
 
-  if (usingCollisionWorker) {
-    collisionWorker = new Worker(workerPath + "/heights-collisions.js");
-  }
   // Set default viewport width and height.
   viewWidth = getCanvas().width();
   viewHeight = getCanvas().height();
@@ -283,6 +280,12 @@ function debugMode(onoff) {
  * @param obj The object to start tracking.
  */
 function collideable(obj) {
+
+  // Create the worker if it hasn't been created yet.
+  if (collisionWorker == null && usingCollisionWorker) {
+    collisionWorker = new Worker(workerPath + "/heights-collisions.js");
+  }
+
   collideableObjs.push(obj);
 }
 
