@@ -91,7 +91,12 @@ function step() {
       objects[i].drawObj();
     } catch (e) {
       if (debugModeFlag) {
-        console.log(e);
+        if ((e.arguments[0] == "step" && e.type == "undefined_method") ||
+            (e.arguments[0] == "drawObj" && e.type == "undefined_method")) {
+          // Its k.
+        } else {
+          console.log(e);
+        }
       }
     }
   }
@@ -291,17 +296,19 @@ function collideable(obj) {
 
 
 function checkCollisions() {
-  collisionWorker.postMessage(JSON.stringify(collideableObjs));
-  collisionWorker.onmessage = function(event) {
-    var couple = JSON.parse(event.data);
-    var obj1 = getInstanceByID(couple[0]);
-    var obj2 = getInstanceByID(couple[1]);
-    try {
-      obj1.onCollision(obj2);
-    } catch (e) {
-      // yo.
-    }
-  };
+  if (this.collisionWorker != null) {
+    collisionWorker.postMessage(JSON.stringify(collideableObjs));
+    collisionWorker.onmessage = function(event) {
+      var couple = JSON.parse(event.data);
+      var obj1 = getInstanceByID(couple[0]);
+      var obj2 = getInstanceByID(couple[1]);
+      try {
+        obj1.onCollision(obj2);
+      } catch (e) {
+        // yo.
+      }
+    };
+  }
 }
 
 /************************
