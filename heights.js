@@ -64,6 +64,7 @@ var charNames = {
   "16": "SHIFT",
   "20": "CAPS",
   "9" : "TAB",
+  "13": "ENTER",
 };
 
 var keyStatus = {};
@@ -159,7 +160,8 @@ function pauseSteps() {
  * Turns on input listeners.
  */
 function setUpListeners() {
-  getCanvas().click(handleInputs);
+  getCanvas().mousedown(handleInputs);
+  getCanvas().mouseup(handleInputs);
   $(document).keydown(handleInputs);
   $(document).keyup(handleInputs);
 }
