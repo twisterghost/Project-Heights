@@ -535,7 +535,7 @@ function getKeyCode(input) {
  * @return The x position of the click.
  */
 function getClickX(input) {
-  return input.offsetY + viewY;
+  return input.offsetX + viewX;
 }
 
 
@@ -545,7 +545,7 @@ function getClickX(input) {
  * @return The y position of the click.
  */
 function getClickY(input) {
-  return input.offsetX + viewX;
+  return input.offsetY + viewY;
 }
 
 
