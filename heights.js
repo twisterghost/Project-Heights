@@ -36,7 +36,7 @@ var usingCollisionWorker = true;
 var collisionWorker = null;
 
 // Version number.
-var version = "1.0.3";
+var version = "1.0.4";
 
 // Viewport property variables.
 var viewX = 0;
@@ -64,6 +64,7 @@ var charNames = {
   "16": "SHIFT",
   "20": "CAPS",
   "9" : "TAB",
+  "13": "ENTER",
 };
 
 var keyStatus = {};
@@ -91,7 +92,12 @@ function step() {
       objects[i].drawObj();
     } catch (e) {
       if (debugModeFlag) {
-        console.log(e);
+        if ((e.arguments[0] == "step" && e.type == "undefined_method") ||
+            (e.arguments[0] == "drawObj" && e.type == "undefined_method")) {
+          // Its k.
+        } else {
+          console.log(e);
+        }
       }
     }
   }
@@ -112,9 +118,6 @@ function start() {
     gameCanvas = $("canvas");
   }
 
-  if (usingCollisionWorker) {
-    collisionWorker = new Worker(workerPath + "/heights-collisions.js");
-  }
   // Set default viewport width and height.
   viewWidth = getCanvas().width();
   viewHeight = getCanvas().height();
@@ -157,7 +160,8 @@ function pauseSteps() {
  * Turns on input listeners.
  */
 function setUpListeners() {
-  getCanvas().click(handleInputs);
+  getCanvas().mousedown(handleInputs);
+  getCanvas().mouseup(handleInputs);
   $(document).keydown(handleInputs);
   $(document).keyup(handleInputs);
 }
@@ -283,22 +287,30 @@ function debugMode(onoff) {
  * @param obj The object to start tracking.
  */
 function collideable(obj) {
+
+  // Create the worker if it hasn't been created yet.
+  if (collisionWorker == null && usingCollisionWorker) {
+    collisionWorker = new Worker(workerPath + "/heights-collisions.js");
+  }
+
   collideableObjs.push(obj);
 }
 
 
 function checkCollisions() {
-  collisionWorker.postMessage(JSON.stringify(collideableObjs));
-  collisionWorker.onmessage = function(event) {
-    var couple = JSON.parse(event.data);
-    var obj1 = getInstanceByID(couple[0]);
-    var obj2 = getInstanceByID(couple[1]);
-    try {
-      obj1.onCollision(obj2);
-    } catch (e) {
-      // yo.
-    }
-  };
+  if (this.collisionWorker != null) {
+    collisionWorker.postMessage(JSON.stringify(collideableObjs));
+    collisionWorker.onmessage = function(event) {
+      var couple = JSON.parse(event.data);
+      var obj1 = getInstanceByID(couple[0]);
+      var obj2 = getInstanceByID(couple[1]);
+      try {
+        obj1.onCollision(obj2);
+      } catch (e) {
+        // yo.
+      }
+    };
+  }
 }
 
 /************************
@@ -385,7 +397,7 @@ function destroyInstance(instance) {
   if (collideableObjs.indexOf(instance) != -1) {
     collideableObjs.splice(collideableObjs.indexOf(instance), 1);
   }
-  
+
   // Remove from input array.
   if (inputObjects.indexOf(instance) != -1) {
     inputObjects.splice(inputObjects.indexOf(instance), 1);
@@ -615,6 +627,17 @@ function boundInstance(obj, minX, minY, maxX, maxY) {
   }
 }
 
+
+/**
+ * Returns true or false with the given percent chance.
+ * @param  percent And int between 0 and 100.
+ * @return true or false decided randomly by percent.
+ */
+function chance(percent) {
+  var rand = Math.floor(Math.random()*100) + 1;
+  return rand <= percent;
+}
+
 /************************
  * API Objects
  ***********************/
@@ -750,7 +773,7 @@ Draw.prototype.circle = function(params) {
   params.centered = varDefault(params.centered, true);
   params.updateable = varDefault(params.updateable, true);
   params.filled = varDefault(params.filled, false);
-  
+
   // Normalize parameters.
   params.layer = true;
   params.name = this.id.toString();
@@ -772,7 +795,7 @@ Draw.prototype.sprite = function(params) {
   params.url = varDefault(params.url, "");
   params.centered = varDefault(params.centered, false);
   params.rotate = varDefault(params.rotate, 0);
-  
+
   // Normalize parameters.
   params = this.normalizeDrawParams(params);
   params.layer = true;
@@ -799,13 +822,13 @@ Draw.prototype.spriteSheet = function(params) {
   params.centered = varDefault(params.centered, false);
   params.updateable = varDefault(params.updateable, true);
   params.cropFromCenter = false;
-  
+
   this.spriteWidth = params.cropWidth;
   this.spriteHeight = params.cropHeight;
   this.spritesPerRow = varDefault(params.spritesPerRow, 1);
   this.totalSprites = varDefault(params.totalSprites, 1);
   this.spriteIndex = varDefault(params.spriteIndex, 0);
-  
+
   // Normalize paramseters.
   params = this.normalizeDrawParams(params);
   params.layer = true;
@@ -862,13 +885,13 @@ Draw.prototype.rectangle = function(params) {
   params.type = Draw.RECTANGLE;
   params.lineWidth = varDefault(params.lineWidth, 1);
   params.centered = varDefault(params.centered, false);
-  
+
   // Normalize parameters.
   params = this.normalizeDrawParams(params);
   params.layer = true;
   params.name = this.id.toString();
   this.type = Draw.RECTANGLE;
-  
+
   getCanvas().drawRect(params);
   return this;
 }
@@ -892,13 +915,13 @@ Draw.prototype.polygon = function(params) {
   params.centered = varDefault(params.centered, true);
   params.radius = varDefault(params.radius, 10);
   params.projection = varDefault(params.projection, .5);
-  
+
   // Normalize parameters.
   params = this.normalizeDrawParams(params);
   this.type = Draw.POLYGON;
   params.layer = true;
   params.name = this.id.toString();
-  
+
   getCanvas().drawPolygon(params);
   return this;
 }
@@ -917,7 +940,7 @@ Draw.prototype.text = function(params) {
   params.font = varDefault(params.font, "12pt Helvetica");
   params.color = varDefault(params.color, "#000");
   params.filled = varDefault(params.filled, true);
-  
+
   // Normalize parameters.
   params = this.normalizeDrawParams(params);
   this.type = Draw.TEXT;
