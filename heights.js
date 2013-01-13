@@ -172,6 +172,9 @@ function setUpListeners() {
  * @param newfps The new speed to run the steps at.
  */
 function setFPS(newfps) {
+  if (newfps < 1) {
+    newfps = 1;
+  }
   fps = newfps;
   runSteps();
 }
@@ -535,7 +538,7 @@ function getKeyCode(input) {
  * @return The x position of the click.
  */
 function getClickX(input) {
-  return input.offsetY + viewY;
+  return input.offsetX + viewX;
 }
 
 
@@ -545,7 +548,7 @@ function getClickX(input) {
  * @return The y position of the click.
  */
 function getClickY(input) {
-  return input.offsetX + viewX;
+  return input.offsetY + viewY;
 }
 
 
@@ -648,9 +651,8 @@ function chance(percent) {
   * @param soundLocation The url of the sound to be played.
   * @param mimeType The MIME type of the sound to be played.
   */
-var Sound = function(soundLocation) {
-  // TODO: Further testing w/ lack of MIME type.
-  this.mimeType = "";
+var Sound = function(soundLocation, type) {
+  this.mimeType = varDefault(type, "audio/mpeg");
   var elem = "<audio><source src=\"" + soundLocation + "\" type=\"" +
       this.mimeType + "\"></audio>";
   this.audioElement = $(elem);
