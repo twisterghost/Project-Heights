@@ -52,6 +52,14 @@ var viewHeightCurrent = 0;
 var mouseX = -1;
 var mouseY = -1;
 
+// Browser constants.
+var Browsers = {
+  CHROME : 1,
+  FIREFOX : 2,
+  INTERNET_EXPLORER : 3,
+  OTHER: 4,
+}
+
 // Character names dictionary.
 var charNames = {
   "&" : "UP",
@@ -363,6 +371,24 @@ function convertProperty(obj, prop, newProp) {
     delete obj[prop];
   }
   return obj;
+}
+
+
+/**
+  * Returns a constant representing the browser the user is using.
+  * @return A browser constant.
+  */
+function getBrowser() {
+  var browserObj = $.browser;
+  if (browserObj.hasOwnProperty("chrome")) {
+    return Browsers.CHROME;
+  } else if (browserObj.hasOwnProperty("mozilla")) {
+    return Browsers.FIREFOX;
+  } else if (browserObj.hasOwnProperty("msie")) {
+    return Browsers.INTERNET_EXPLORER;
+  } else {
+    return Browsers.OTHER;
+  }
 }
 
 /************************
