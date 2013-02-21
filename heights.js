@@ -675,10 +675,20 @@ function chance(percent) {
   * Object: sound
   * Interface for loading, playing and controlling sounds.
   * @param soundLocation The url of the sound to be played.
-  * @param mimeType The MIME type of the sound to be played.
   */
-var Sound = function(soundLocation, type) {
-  this.mimeType = varDefault(type, "audio/mpeg");
+var Sound = function(soundLocation) {
+
+  // Determine the MIME type.
+  var extension = soundLocation.split('.').pop().toLowerCase();
+  if (extension == "mp3") {
+    this.mimeType = Sound.TYPE_MP3;
+  } else if (extension == "ogg") {
+    this.mimeType = Sound.TYPE_OGG;
+  } else if (extension == "wav") {
+    this.mimeType = Sound.TYPE_WAV;
+  }
+
+  // Create audio element html.
   var elem = "<audio><source src=\"" + soundLocation + "\" type=\"" +
       this.mimeType + "\"></audio>";
   this.audioElement = $(elem);
@@ -686,6 +696,12 @@ var Sound = function(soundLocation, type) {
   this.audioElement[0].load();
   sounds.push(this);
 };
+
+
+// Declare sound mime type constants.
+Sound.prototype.TYPE_MP3 = "audio/mpeg";
+Sound.prototype.TYPE_OGG = "audio/ogg";
+Sound.prototype.TYPE_WAV = "audio/wav";
 
 
 /**
