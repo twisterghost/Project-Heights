@@ -302,15 +302,6 @@ function collideable(obj) {
   // Create the worker if it hasn't been created yet.
   if (collisionWorker == null && usingCollisionWorker) {
     collisionWorker = new Worker(workerPath + "/heights-collisions.js");
-  }
-
-  collideableObjs.push(obj);
-}
-
-
-function checkCollisions() {
-  if (this.collisionWorker != null) {
-    collisionWorker.postMessage(JSON.stringify(collideableObjs));
     collisionWorker.onmessage = function(event) {
       var couple = JSON.parse(event.data);
       var obj1 = getInstanceByID(couple[0]);
@@ -322,6 +313,27 @@ function checkCollisions() {
       }
     };
   }
+
+  collideableObjs.push(obj);
+}
+
+
+/**
+ * Sends a message to the collision worker to check for collisions.
+ */
+function checkCollisions() {
+  if (this.collisionWorker != null) {
+    collisionWorker.postMessage(JSON.stringify(collideableObjs));
+  }
+}
+
+
+/**
+ * Sets the path to the worker files on this instance.
+ * @param newPath The path to find the workers at.
+ */
+function setWorkerPath(newPath) {
+  workerPath = newPath;
 }
 
 /************************
