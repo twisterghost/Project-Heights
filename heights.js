@@ -84,6 +84,16 @@ var workerPath = "/workers";
  ***********************/
 
 /**
+ * Wrapper for document ready.
+ * @param functionCall The function to run when the page loads.
+ */
+function onGameLoad(functionCall) {
+  $(document).ready(function() {
+    functionCall();
+  });
+}
+
+/**
  * Returns the version number of the engine.
  */
 function getVersion() {
