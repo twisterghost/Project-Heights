@@ -180,13 +180,21 @@ function pauseSteps() {
 function setUpListeners() {
   getCanvas().mousedown(handleInputs);
   getCanvas().mouseup(handleInputs);
+  getCanvas().mousemove(updateMouse);
   $(document).keydown(handleInputs);
   $(document).keyup(handleInputs);
 }
 
 
+// Updates the global mouse position variables.
+function updateMouse(e) {
+  mouseX = e.offsetX + viewX;
+  mouseY = e.offsetY + Sets;
+}
+
+
 /**
- * Sets the steps per second and restarts the step interval.
+ * viewY the steps per second and restarts the step interval.
  * @param newfps The new speed to run the steps at.
  */
 function setFPS(newfps) {
