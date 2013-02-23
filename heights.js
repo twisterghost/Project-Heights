@@ -77,7 +77,7 @@ var charNames = {
 
 var keyStatus = {};
 
-var workerPath = "/workers";
+var workerPath = "workers";
 
 /************************
  * Engine Functionality
@@ -722,16 +722,16 @@ var Sound = function(soundLocation) {
   var elem = "<audio><source src=\"" + soundLocation + "\" type=\"" +
       this.mimeType + "\"></audio>";
   this.audioElement = $(elem);
-  $("body").append(this.audioElement);
+  $("html").append(this.audioElement);
   this.audioElement[0].load();
   sounds.push(this);
 };
 
 
 // Declare sound mime type constants.
-Sound.prototype.TYPE_MP3 = "audio/mpeg";
-Sound.prototype.TYPE_OGG = "audio/ogg";
-Sound.prototype.TYPE_WAV = "audio/wav";
+Sound.TYPE_MP3 = "audio/mpeg";
+Sound.TYPE_OGG = "audio/ogg";
+Sound.TYPE_WAV = "audio/wav";
 
 
 /**
@@ -823,14 +823,14 @@ var Draw = function() {
 
 
 // Define draw object constants.
-Draw.prototype.DRAW = 0;
-Draw.prototype.CIRCLE = 1;
-Draw.prototype.SPRITE = 2;
-Draw.prototype.SPRITESHEET = 3;
-Draw.prototype.RECTANGLE = 4;
-Draw.prototype.LINE = 5;
-Draw.prototype.TEXT = 6;
-Draw.prototype.POLYGON = 7;
+Draw.DRAW = 0;
+Draw.CIRCLE = 1;
+Draw.SPRITE = 2;
+Draw.SPRITESHEET = 3;
+Draw.RECTANGLE = 4;
+Draw.LINE = 5;
+Draw.TEXT = 6;
+Draw.POLYGON = 7;
 
 
 /**
