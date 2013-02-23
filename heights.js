@@ -823,14 +823,14 @@ var Draw = function() {
 
 
 // Define draw object constants.
-Draw.DRAW = 0;
-Draw.CIRCLE = 1;
-Draw.SPRITE = 2;
-Draw.SPRITESHEET = 3;
-Draw.RECTANGLE = 4;
-Draw.LINE = 5;
-Draw.TEXT = 6;
-Draw.POLYGON = 7;
+Draw.prototype.DRAW = 0;
+Draw.prototype.CIRCLE = 1;
+Draw.prototype.SPRITE = 2;
+Draw.prototype.SPRITESHEET = 3;
+Draw.prototype.RECTANGLE = 4;
+Draw.prototype.LINE = 5;
+Draw.prototype.TEXT = 6;
+Draw.prototype.POLYGON = 7;
 
 
 /**
