@@ -189,7 +189,7 @@ function setUpListeners() {
 // Updates the global mouse position variables.
 function updateMouse(e) {
   mouseX = e.offsetX + viewX;
-  mouseY = e.offsetY + Sets;
+  mouseY = e.offsetY + viewY;
 }
 
 
