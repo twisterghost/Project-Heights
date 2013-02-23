@@ -1,41 +1,33 @@
-#Project-Heights
+#Project Heights - JavaScript Game Engine
 
-Welcome to the Project Heights beta stage.
+## Introduction
+Project Heights is a powerful but lightweight, purely JavaScript game engine.
+It is built from the ground up to be easy to get started with while being
+powerful enough to handle any kind of project.
 
-To begin working on your own project, download or clone the repo and get at it!
+## Community
+Heights has a Google Group to handle mailing lists and message boards. Join us
+at [our group](https://groups.google.com/forum/#!forum/projectheights) to learn
+more and participate in a growing group of developers.
 
-An example has been included to show you how to use the engine. Depending on
-your browser, you may need to upload the example to try it if it does not work
-locally.
+## Website & Documentation
+Visit the [Project Heights Website](http://heightsjs.com) for more information
+about the engine. **Looking for the documentation?**
+[Look no further!](http://docs.heightsjs.com)
 
-You can find the documentaion website [right here](http://docs.heightsjs.com).
+## Open Source Project
+Heights is completely open source and accepting pull requests. If you want to
+help add to the project, you can see what is on the list of to-do's and what is
+going on at [our trello board](http://trello.heightsjs.com). Join the board for
+more input, and feel free to branch, develop and send pull requests.
 
-##What do you mean by "beta"?
-As a beta tester/developer, it is up to you to help get Project Heights to its
-full potential. What that really means is up to you. If you are more interested
-in the engine side of things, you can help develop the engine and fix bugs or
-add useful functionality. If you are more into developing a game of your own,
-use the engine to do so and report on what you would like to see so we can get
-it implemented asap! You can also report bugs via GitHub, and please do!!
+## License
+Project Heights is under the MIT License.
 
-You can play the demo game [here](http://heightsjs.com/dev/shooter/index.html). Use arrow
-keys and space.
+Copyright (c) 2013 Heights.js Development Team
 
-Be sure to sign up to the [Project Heights google group](https://groups.google.com/forum/?fromgroups#!forum/projectheights) if you are interested in
-joining the developers. You can also view the
-[Trello board](http://trello.heightsjs.com) and request access to that, or
-comment/vote on features.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-If you have any questions at all, you can email me at twisterghost@gmail.com
-and I will be happy to answer or even help you make your game.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-You can also email the Project Heights beta members by sending an email to
-projectheights@googlegroups.com.
-
-I will be updating the main repository frequently as bugs are found. If you are
-planning to develop for the engine, make your own branch/repo and open a pull
-request. Once your code is reviewed and approved it will be added in to the
-engine in the next release. The documentaion offered at docs.heightsjs.com are
-for the main branch only.
-
-Enjoy and thank your for your participation!
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
