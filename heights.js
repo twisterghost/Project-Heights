@@ -36,7 +36,7 @@ var usingCollisionWorker = true;
 var collisionWorker = null;
 
 // Version number.
-var version = "1.0.4";
+var version = "1.0.5";
 
 // Viewport property variables.
 var viewX = 0;
