@@ -52,6 +52,14 @@ var viewHeightCurrent = 0;
 var mouseX = -1;
 var mouseY = -1;
 
+// Browser constants.
+var Browsers = {
+  CHROME : 1,
+  FIREFOX : 2,
+  INTERNET_EXPLORER : 3,
+  OTHER: 4,
+}
+
 // Character names dictionary.
 var charNames = {
   "&" : "UP",
@@ -69,11 +77,21 @@ var charNames = {
 
 var keyStatus = {};
 
-var workerPath = "/workers";
+var workerPath = "workers";
 
 /************************
  * Engine Functionality
  ***********************/
+
+/**
+ * Wrapper for document ready.
+ * @param functionCall The function to run when the page loads.
+ */
+function onGameLoad(functionCall) {
+  $(document).ready(function() {
+    functionCall();
+  });
+}
 
 /**
  * Returns the version number of the engine.
@@ -162,16 +180,27 @@ function pauseSteps() {
 function setUpListeners() {
   getCanvas().mousedown(handleInputs);
   getCanvas().mouseup(handleInputs);
+  getCanvas().mousemove(updateMouse);
   $(document).keydown(handleInputs);
   $(document).keyup(handleInputs);
 }
 
 
+// Updates the global mouse position variables.
+function updateMouse(e) {
+  mouseX = e.offsetX + viewX;
+  mouseY = e.offsetY + viewY;
+}
+
+
 /**
- * Sets the steps per second and restarts the step interval.
+ * viewY the steps per second and restarts the step interval.
  * @param newfps The new speed to run the steps at.
  */
 function setFPS(newfps) {
+  if (newfps < 1) {
+    newfps = 1;
+  }
   fps = newfps;
   runSteps();
 }
@@ -291,15 +320,6 @@ function collideable(obj) {
   // Create the worker if it hasn't been created yet.
   if (collisionWorker == null && usingCollisionWorker) {
     collisionWorker = new Worker(workerPath + "/heights-collisions.js");
-  }
-
-  collideableObjs.push(obj);
-}
-
-
-function checkCollisions() {
-  if (this.collisionWorker != null) {
-    collisionWorker.postMessage(JSON.stringify(collideableObjs));
     collisionWorker.onmessage = function(event) {
       var couple = JSON.parse(event.data);
       var obj1 = getInstanceByID(couple[0]);
@@ -311,6 +331,27 @@ function checkCollisions() {
       }
     };
   }
+
+  collideableObjs.push(obj);
+}
+
+
+/**
+ * Sends a message to the collision worker to check for collisions.
+ */
+function checkCollisions() {
+  if (this.collisionWorker != null) {
+    collisionWorker.postMessage(JSON.stringify(collideableObjs));
+  }
+}
+
+
+/**
+ * Sets the path to the worker files on this instance.
+ * @param newPath The path to find the workers at.
+ */
+function setWorkerPath(newPath) {
+  workerPath = newPath;
 }
 
 /************************
@@ -360,6 +401,24 @@ function convertProperty(obj, prop, newProp) {
     delete obj[prop];
   }
   return obj;
+}
+
+
+/**
+  * Returns a constant representing the browser the user is using.
+  * @return A browser constant.
+  */
+function getBrowser() {
+  var browserObj = $.browser;
+  if (browserObj.hasOwnProperty("chrome")) {
+    return Browsers.CHROME;
+  } else if (browserObj.hasOwnProperty("mozilla")) {
+    return Browsers.FIREFOX;
+  } else if (browserObj.hasOwnProperty("msie")) {
+    return Browsers.INTERNET_EXPLORER;
+  } else {
+    return Browsers.OTHER;
+  }
 }
 
 /************************
@@ -646,18 +705,33 @@ function chance(percent) {
   * Object: sound
   * Interface for loading, playing and controlling sounds.
   * @param soundLocation The url of the sound to be played.
-  * @param mimeType The MIME type of the sound to be played.
   */
 var Sound = function(soundLocation) {
-  // TODO: Further testing w/ lack of MIME type.
-  this.mimeType = "";
+
+  // Determine the MIME type.
+  var extension = soundLocation.split('.').pop().toLowerCase();
+  if (extension == "mp3") {
+    this.mimeType = Sound.TYPE_MP3;
+  } else if (extension == "ogg") {
+    this.mimeType = Sound.TYPE_OGG;
+  } else if (extension == "wav") {
+    this.mimeType = Sound.TYPE_WAV;
+  }
+
+  // Create audio element html.
   var elem = "<audio><source src=\"" + soundLocation + "\" type=\"" +
       this.mimeType + "\"></audio>";
   this.audioElement = $(elem);
-  $("body").append(this.audioElement);
+  $("html").append(this.audioElement);
   this.audioElement[0].load();
   sounds.push(this);
 };
+
+
+// Declare sound mime type constants.
+Sound.TYPE_MP3 = "audio/mpeg";
+Sound.TYPE_OGG = "audio/ogg";
+Sound.TYPE_WAV = "audio/wav";
 
 
 /**
