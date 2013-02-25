@@ -128,11 +128,9 @@ function step() {
   }
 
   if (viewX != viewXCurrent || viewY != viewYCurrent) {
-    console.log("tran");
     setTranslation();
   }
   if (viewHeight != viewHeightCurrent || viewWidth != viewWidthCurrent) {
-    console.log("scale");
     setViewScale();
   }
   checkCollisions();
