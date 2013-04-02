@@ -36,7 +36,7 @@ var usingCollisionWorker = true;
 var collisionWorker = null;
 
 // Version number.
-var version = "1.0.5";
+var version = "1.0.6";
 
 // Viewport property variables.
 var viewX = 0;
@@ -79,6 +79,13 @@ var keyStatus = {};
 
 var workerPath = "workers";
 
+// Collision detection worker.
+var collisionWorkerParts = [
+  "function collisionInstance(e,t){return e.x<t.x+t.width&&e.x+e.width>t.x&&e.y<t.y+t.height&&e.y+e.height>t.y}onmessage=function(e){var t=JSON.parse(e.data);for(var n=0;n<t.length;n++){for(var r=0;r<t.length;r++){if(n!=r&&collisionInstance(t[n],t[r])){var i=new Array(t[n].id,t[r].id);postMessage(JSON.stringify(i))}}}}"
+];
+var collisionWorkerBlob = new Blob(collisionWorkerParts, {"type" : "application/javascript"});
+var collisionWorkerBlobURL = URL.createObjectURL(collisionWorkerBlob);
+
 /************************
  * Engine Functionality
  ***********************/
@@ -119,8 +126,13 @@ function step() {
       }
     }
   }
-  setTranslation();
-  setViewScale();
+
+  if (viewX != viewXCurrent || viewY != viewYCurrent) {
+    setTranslation();
+  }
+  if (viewHeight != viewHeightCurrent || viewWidth != viewWidthCurrent) {
+    setViewScale();
+  }
   checkCollisions();
 
   // Update drawn objects.
@@ -319,7 +331,7 @@ function collideable(obj) {
 
   // Create the worker if it hasn't been created yet.
   if (collisionWorker == null && usingCollisionWorker) {
-    collisionWorker = new Worker(workerPath + "/heights-collisions.js");
+    collisionWorker = new Worker(collisionWorkerBlobURL);
     collisionWorker.onmessage = function(event) {
       var couple = JSON.parse(event.data);
       var obj1 = getInstanceByID(couple[0]);
@@ -823,14 +835,14 @@ var Draw = function() {
 
 
 // Define draw object constants.
-Draw.prototype.DRAW = 0;
-Draw.prototype.CIRCLE = 1;
-Draw.prototype.SPRITE = 2;
-Draw.prototype.SPRITESHEET = 3;
-Draw.prototype.RECTANGLE = 4;
-Draw.prototype.LINE = 5;
-Draw.prototype.TEXT = 6;
-Draw.prototype.POLYGON = 7;
+Draw.DRAW = 0;
+Draw.CIRCLE = 1;
+Draw.SPRITE = 2;
+Draw.SPRITESHEET = 3;
+Draw.RECTANGLE = 4;
+Draw.LINE = 5;
+Draw.TEXT = 6;
+Draw.POLYGON = 7;
 
 
 /**
