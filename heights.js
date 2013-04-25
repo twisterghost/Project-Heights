@@ -36,7 +36,7 @@ var usingCollisionWorker = true;
 var collisionWorker = null;
 
 // Version number.
-var version = "1.0.6";
+var version = "1.1.1";
 
 // Viewport property variables.
 var viewX = 0;
@@ -117,12 +117,7 @@ function step() {
       objects[i].drawObj();
     } catch (e) {
       if (debugModeFlag) {
-        if ((e.arguments[0] == "step" && e.type == "undefined_method") ||
-            (e.arguments[0] == "drawObj" && e.type == "undefined_method")) {
-          // Its k.
-        } else {
-          console.log(e);
-        }
+        console.log(e);
       }
     }
   }
@@ -396,7 +391,8 @@ function varDefault(variable, defaultValue) {
  * @return A unique ID integer.
  */
 function getUniqueID() {
-  return instanceID++;
+  instanceID += 1;
+  return instanceID;
 }
 
 
@@ -830,7 +826,7 @@ Sound.prototype.setProperty = function(prop, value) {
  */
 var Draw = function() {
   this.id = getUniqueID();
-  this.type = Draw.DRAW;
+  this.drawType = Draw.DRAW;
 };
 
 
@@ -864,7 +860,7 @@ Draw.prototype.circle = function(params) {
   params.layer = true;
   params.name = this.id.toString();
   params = this.normalizeDrawParams(params);
-  this.type = Draw.CIRCLE;
+  this.drawType = Draw.CIRCLE;
   getCanvas().drawArc(params);
   return this;
 };
@@ -886,7 +882,7 @@ Draw.prototype.sprite = function(params) {
   params = this.normalizeDrawParams(params);
   params.layer = true;
   params.name = this.id.toString();
-  this.type = Draw.SPRITE;
+  this.drawType = Draw.SPRITE;
   getCanvas().drawImage(params);
   return this;
 };
@@ -919,7 +915,7 @@ Draw.prototype.spriteSheet = function(params) {
   params = this.normalizeDrawParams(params);
   params.layer = true;
   params.name = this.id.toString();
-  this.type = Draw.SPRITESHEET;
+  this.drawType = Draw.SPRITESHEET;
   getCanvas().drawImage(params);
   return this;
 };
@@ -939,7 +935,7 @@ Draw.prototype.cropToCurrentSprite = function() {
  * Goes to the next frame on the spriteSheet.
  */
 Draw.prototype.nextSprite = function() {
-  if (this.type == Draw.SPRITESHEET) {
+  if (this.drawType == Draw.SPRITESHEET) {
     this.spriteIndex = (this.spriteIndex + 1) % this.totalSprites;
     this.cropToCurrentSprite();
   }
@@ -950,7 +946,7 @@ Draw.prototype.nextSprite = function() {
  * Sets the current frame of the spritesheet.
  */
 Draw.prototype.gotoSprite = function(ind) {
-  if (this.type == Draw.SPRITESHEET) {
+  if (this.drawType == Draw.SPRITESHEET) {
     this.spriteIndex = ind % this.totalSprites;
   }
 }
@@ -968,7 +964,6 @@ Draw.prototype.rectangle = function(params) {
   params.height = varDefault(params.height, 0);
   params.filled = varDefault(params.filled, false);
   params.color = varDefault(params.color, "#000");
-  params.type = Draw.RECTANGLE;
   params.lineWidth = varDefault(params.lineWidth, 1);
   params.centered = varDefault(params.centered, false);
 
@@ -976,9 +971,33 @@ Draw.prototype.rectangle = function(params) {
   params = this.normalizeDrawParams(params);
   params.layer = true;
   params.name = this.id.toString();
-  this.type = Draw.RECTANGLE;
+  this.drawType = Draw.RECTANGLE;
 
   getCanvas().drawRect(params);
+  return this;
+}
+
+
+/**
+ * Draws a line with the given params, creating a new layer.
+ * @param params An array of parameters for the line.
+ * @return the draw object.
+ */
+Draw.prototype.line = function(params) {
+  params.x1 = varDefault(params.x1, 0);
+  params.y1 = varDefault(params.y1, 0);
+  params.x2 = varDefault(params.x2, 0);
+  params.y2 = varDefault(params.y2, 0);
+  params.color = varDefault(params.color, "#000");
+  params.lineWidth = varDefault(params.lineWidth, 1);
+
+  // Normalize parameters.
+  params = this.normalizeDrawParams(params);
+  params.layer = true;
+  params.name = this.id.toString();
+  this.drawType = Draw.LINE;
+
+  getCanvas().drawLine(params);
   return this;
 }
 
@@ -995,7 +1014,6 @@ Draw.prototype.polygon = function(params) {
   params.height = varDefault(params.height, 0);
   params.filled = varDefault(params.filled, false);
   params.color = varDefault(params.color, "#000");
-  params.type = Draw.POLYGON;
   params.lineWidth = varDefault(params.lineWidth, 1);
   params.sides = varDefault(params.sides, 3);
   params.centered = varDefault(params.centered, true);
@@ -1004,7 +1022,7 @@ Draw.prototype.polygon = function(params) {
 
   // Normalize parameters.
   params = this.normalizeDrawParams(params);
-  this.type = Draw.POLYGON;
+  this.drawType = Draw.POLYGON;
   params.layer = true;
   params.name = this.id.toString();
 
@@ -1029,7 +1047,7 @@ Draw.prototype.text = function(params) {
 
   // Normalize parameters.
   params = this.normalizeDrawParams(params);
-  this.type = Draw.TEXT;
+  this.drawType = Draw.TEXT;
   params.layer = true;
   params.name = this.id.toString();
 
@@ -1044,6 +1062,7 @@ Draw.prototype.text = function(params) {
  */
 Draw.prototype.update = function(params) {
   params = this.normalizeDrawParams(params);
+  this.lastUpdate = params;
   getCanvas().setLayer(this.id.toString(), params);
 };
 
