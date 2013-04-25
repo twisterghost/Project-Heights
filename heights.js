@@ -429,6 +429,30 @@ function getBrowser() {
   }
 }
 
+
+/************************
+ * Native API Extensions
+ ***********************/
+
+/**
+ * Adds toRad() to numbers, converting from degrees to radians.
+ */
+if (typeof(Number.prototype.toRad) === "undefined") {
+  Number.prototype.toRad = function() {
+    return this * Math.PI / 180;
+  }
+}
+
+
+/**
+ * Adds toDeg() to numbers, converting from radians to degrees.
+ */
+if (typeof(Number.prototype.toDeg) === "undefined") {
+  Number.prototype.toDeg = function() {
+    return this * (180 / Math.PI);
+  }
+}
+
 /************************
  * API Functionality
  ***********************/
