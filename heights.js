@@ -430,6 +430,30 @@ function getBrowser() {
   }
 }
 
+
+/************************
+ * Native API Extensions
+ ***********************/
+
+/**
+ * Adds toRad() to numbers, converting from degrees to radians.
+ */
+if (typeof(Number.prototype.toRad) === "undefined") {
+  Number.prototype.toRad = function() {
+    return this * Math.PI / 180;
+  }
+}
+
+
+/**
+ * Adds toDeg() to numbers, converting from radians to degrees.
+ */
+if (typeof(Number.prototype.toDeg) === "undefined") {
+  Number.prototype.toDeg = function() {
+    return this * (180 / Math.PI);
+  }
+}
+
 /************************
  * API Functionality
  ***********************/
@@ -975,6 +999,30 @@ Draw.prototype.rectangle = function(params) {
   this.drawType = Draw.RECTANGLE;
 
   getCanvas().drawRect(params);
+  return this;
+}
+
+
+/**
+ * Draws a line with the given params, creating a new layer.
+ * @param params An array of parameters for the line.
+ * @return the draw object.
+ */
+Draw.prototype.line = function(params) {
+  params.x1 = varDefault(params.x1, 0);
+  params.y1 = varDefault(params.y1, 0);
+  params.x2 = varDefault(params.x2, 0);
+  params.y2 = varDefault(params.y2, 0);
+  params.color = varDefault(params.color, "#000");
+  params.lineWidth = varDefault(params.lineWidth, 1);
+
+  // Normalize parameters.
+  params = this.normalizeDrawParams(params);
+  params.layer = true;
+  params.name = this.id.toString();
+  this.drawType = Draw.LINE;
+
+  getCanvas().drawLine(params);
   return this;
 }
 
