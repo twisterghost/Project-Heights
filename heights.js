@@ -36,7 +36,7 @@ var usingCollisionWorker = true;
 var collisionWorker = null;
 
 // Version number.
-var version = "1.1.0";
+var version = "1.1.1";
 
 // Viewport property variables.
 var viewX = 0;
@@ -111,7 +111,6 @@ function getVersion() {
  * Runs the step function on all tracked objects.
  */
 function step() {
-
   for (var i = 0; i < objects.length; i++) {
     try {
       objects[i].step();
