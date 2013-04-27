@@ -113,8 +113,12 @@ function getVersion() {
 function step() {
   for (var i = 0; i < objects.length; i++) {
     try {
-      objects[i].step();
-      objects[i].drawObj();
+      if (typeof objects[i].step === "function") {
+        objects[i].step();
+      }
+      if (typeof objects[i].drawObj === "function") {
+        objects[i].drawObj();
+      }
     } catch (e) {
       if (debugModeFlag) {
         console.log(e);
