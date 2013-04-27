@@ -195,8 +195,8 @@ function setUpListeners() {
 
 // Updates the global mouse position variables.
 function updateMouse(e) {
-  mouseX = e.offsetX + viewX;
-  mouseY = e.offsetY + viewY;
+  mouseX = ((e.offsetX / getCanvas().width()) * viewWidth) + viewX;
+  mouseY = ((e.offsetY / getCanvas().height()) * viewHeight) + viewY;
 }
 
 
@@ -626,7 +626,7 @@ function getKeyCode(input) {
  * @return The x position of the click.
  */
 function getClickX(input) {
-  return input.offsetX + viewX;
+  return ((input.offsetX / getCanvas().width()) * viewWidth) + viewX;
 }
 
 
@@ -636,7 +636,7 @@ function getClickX(input) {
  * @return The y position of the click.
  */
 function getClickY(input) {
-  return input.offsetY + viewY;
+  return ((input.offsetY / getCanvas().height()) * viewHeight) + viewY;
 }
 
 
